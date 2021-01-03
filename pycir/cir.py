@@ -57,7 +57,7 @@ def cirPAVA(y, x=None, wt=None, outx=None, interiorStrict=True, strict=False, yb
         if not(any(viol)):
             break
 
-        i = np.min(np.where(viol==True)) # With sciris instead: i = sc.findfirst(viol)
+        i = np.min(np.where(viol==True))
  #       print(i)
  #       print(dr)
         dr.loc[i,'y'] = (dr.y[i]*dr.weight[i]+dr.y[i+1]*dr.weight[i+1]) / (dr.weight[i]+dr.weight[i+1])
@@ -65,33 +65,35 @@ def cirPAVA(y, x=None, wt=None, outx=None, interiorStrict=True, strict=False, yb
         dr.loc[i,'weight'] = dr.weight[i]+dr.weight[i+1]
         dr = dr.drop(i+1).reset_index(drop=True)
         m -= 1
-        if (m <= 1):
+        if m <= 1:
             break
 
     # extending back to original boundaries if needed
     if dr.x[0]>dr0.x[0]:
-        dr=dr0.head(1).append(dr,ignore_index=True).copy()
+        dr = dr0.head(1).append(dr,ignore_index=True).copy()
         dr.loc[0,'y']=dr.y[1]
         dr.loc[0,'weight']=0 # The weight is spoken for though
     if max(dr.x)<max(dr0.x):
         dr = dr.append(dr0.tail(1),ignore_index=True).copy()
-        dr.loc[dr.x==max(dr.x),'weight']=0 # The weight is spoken for though
-        dr.loc[dr.x==max(dr.x),'y']=max(dr.y)
+        dr.loc[dr.x==max(dr.x),'weight'] = 0 # The weight is spoken for though
+        dr.loc[dr.x==max(dr.x),'y'] = max(dr.y)
 
+    # Finish up
     outy = np.interp(x=outx, xp=dr.x, fp=dr.y)
     if not full:
         return(outy)
 
     # Full-ass return
-    inx = np.repeat(False, len(outx))
-    for i in range(0,len(outx)-1):
-        inx[i] = (outx[i] in dr0.x)
-
-    if all(inx):
-        drout = dr0
-        drout.y = outy
     else:
-        drout=pd.DataFrame(data={ 'x':outx,'y':outy, 'weight':0})
+        inx = np.repeat(False, len(outx))
+        for i in range(len(outx)-1):
+            inx[i] = (outx[i] in dr0.x)
 
-    output = pd.Series({'output':drout,'input':dr0,'shrinkage':dr})
-    return output
+        if all(inx):
+            drout = dr0
+            drout.y = outy
+        else:
+            drout = pd.DataFrame(data={ 'x':outx,'y':outy, 'weight':0})
+
+        output = pd.Series({'output':drout,'input':dr0,'shrinkage':dr})
+        return output
