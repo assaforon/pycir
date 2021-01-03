@@ -95,5 +95,5 @@ def cirPAVA(y, x=None, wt=None, outx=None, interiorStrict=True, strict=False, yb
         else:
             drout = pd.DataFrame(data={ 'x':outx,'y':outy, 'weight':0})
 
-        output = pd.Series({'output':drout,'input':dr0,'shrinkage':dr})
+        output = {'output':drout,'input':dr0,'shrinkage':dr}
         return output
