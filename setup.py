@@ -25,7 +25,7 @@ setup(
     version=version,
     author="Assaf Oron",
     author_email="aoron@idmod.org",
-    description="School reopening in Covasim",
+    description="Centered isotonic regression",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='http://idmod.org',
