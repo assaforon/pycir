@@ -36,16 +36,18 @@ def morrisUCL(y,n,halfa=None):
     y=np.asarray(y).copy()
     n=np.asarray(n).copy()
     m=len(y)
-    if(len(n)!=m): stop("Mismatched lengths in Morris.\n")
+    if(len(n)!=m): raise ValueError("Mismatched lengths in Morris.")
     if halfa is None: halfa=0.05
 
     # weird prep...
     uout=np.repeat(1,m)
     a=m-1
-    ### At uppermost doses as long as phat=1, no need for algorithms
-    while(y[a]==n[a] && a>=0) a=a-1
-    if(a<0) return(uout)
     
+    ### At uppermost doses as long as phat=1, no need for algorithms
+    while(y[a]==n[a] and a>=0): a=a-1
+    if(a<0): return(uout)
+    
+    def h(theta,y,n,j,alpha): Gupper(theta,y,n,j)-alpha
     for b in np.arange(a,0,-1):
     {
     	uout[b]=uniroot(function(theta,h,d,alpha,...) h(theta=theta,...)-alpha,interval=c(0,1),
