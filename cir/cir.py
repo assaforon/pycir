@@ -9,11 +9,20 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Centered isotonic regression, generic but more tailored to dose-response and dose-finding data
 # Assaf Oron, recoded from R 'cir' package
-# x,y,wt: vectors of equal length with the doses, mean y values (usually response rates in [0,1]), and weights (often sample size).
-def cirPAVA(y,x=None,wt=None,outx=None,interiorStrict=True,strict=False,ybounds=np.asarray([0.0,1.0]),full=False,dec=False):
+def cirPAVA(y, x=None, wt=None, outx=None, interiorStrict=True, strict=False, ybounds=None, full=False, dec=False):
+    """
+    Centered isotonic regression, generic but more tailored to dose-response and dose-finding data.
 
+    Args:
+        x,y,wt: vectors of equal length with the doses, mean y values (usually response rates in [0,1]), and weights (often sample size)
+        outx: ...
+    """
+
+# Assuming default bounds of y for dose-response data
+# This matters only if either of the strict options is True.
+    if ybounds is None:
+        ybounds = np.asarray([0.0,1.0])
 
     y=np.asarray(y).copy()
     m=y.size
@@ -28,8 +37,7 @@ def cirPAVA(y,x=None,wt=None,outx=None,interiorStrict=True,strict=False,ybounds=
     else: outx=np.asarray(outx)
     dr0=dr.copy()
     m0=dr0.y.size
-    if(dec): 
-        dr.loc['y'] = -dr.y
+    if(dec): dr.loc['y'] = -dr.y
         
     while True:
         viol=np.array(np.diff(dr.y)<0)    
@@ -64,6 +72,9 @@ def cirPAVA(y,x=None,wt=None,outx=None,interiorStrict=True,strict=False,ybounds=
         dr=dr.append(dr0.tail(1),ignore_index=True).copy()
         dr.loc[dr.x==max(dr.x),'weight']=0 # The weight is spoken for though
         dr.loc[dr.x==max(dr.x),'y']=max(dr.y) 
+        
+#### Preparing output
+    if(dec): dr.loc['y'] = -dr.y
 
     outy=np.interp(x=outx,xp=dr.x,fp=dr.y)    
     if not full: return(outy)

@@ -21,15 +21,15 @@ CLASSIFIERS = [
 ]
 
 setup(
-    name="pycir",
+    name="cir",
     version=version,
     author="Assaf Oron",
     author_email="aoron@idmod.org",
-    description="Centered isotonic regression",
+    description="Isotonic regression and Centered isotonic regression",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='http://idmod.org',
-    keywords=["regression"],
+    url='',
+    keywords=["regression","nonparametric"],
     platforms=["OS Independent"],
     classifiers=CLASSIFIERS,
     packages=find_packages(),

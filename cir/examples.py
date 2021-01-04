@@ -9,8 +9,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 x=range(1,6)
-y=[1/7,1/8,1/2,1/4,4/17]
-wt=[7,24,20,12,17]
+y=np.asarray([1/7,1/8,1/2,1/4,4/17])
+wt=np.asarray([7,24,20,12,17])
 
 fig, ax = plt.subplots()
 ax.scatter(x,y,wt,c='black',marker='x')
